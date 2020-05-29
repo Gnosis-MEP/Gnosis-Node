@@ -20,74 +20,6 @@ services:
       - 14268:14268
       - 9411:9411
 
-  adaptation-knowledge:
-    image: registry.insight-centre.org/sit/mps/adaptation-knowledge:${IMAGE_TAG}
-    command: python /service/adaptation_knowledge/run.py
-    depends_on:
-      - redis
-
-    environment:
-      - PYTHONUNBUFFERED=0
-      - REDIS_ADDRESS=${REDIS_ADDRESS}
-      - REDIS_PORT=${REDIS_PORT}
-      - TRACER_REPORTING_HOST=${TRACER_REPORTING_HOST}
-      - TRACER_REPORTING_PORT=${TRACER_REPORTING_PORT}
-      - SERVICE_STREAM_KEY=${ADAPTATION_KNOWLEDGE_STREAM_KEY}
-      - SERVICE_CMD_KEY=${ADAPTATION_KNOWLEDGE_CMD_KEY}
-      - LOGGING_LEVEL=DEBUG
-    cpus: 0.25
-
-  adaptation-monitor:
-    image: registry.insight-centre.org/sit/mps/adaptation-monitor:${IMAGE_TAG}
-    command: python /service/adaptation_monitor/run.py
-    depends_on:
-      - redis
-
-    environment:
-      - PYTHONUNBUFFERED=0
-      - REDIS_ADDRESS=${REDIS_ADDRESS}
-      - REDIS_PORT=${REDIS_PORT}
-      - TRACER_REPORTING_HOST=${TRACER_REPORTING_HOST}
-      - TRACER_REPORTING_PORT=${TRACER_REPORTING_PORT}
-      - SERVICE_STREAM_KEY=${ADAPTATION_MONITOR_STREAM_KEY}
-      - SERVICE_CMD_KEY=${ADAPTATION_MONITOR_CMD_KEY}
-      - LOGGING_LEVEL=DEBUG
-    cpus: 0.25
-
-  adaptation-analyser:
-    image: registry.insight-centre.org/sit/mps/adaptation-analyser:${IMAGE_TAG}
-    command: python /service/adaptation_analyser/run.py
-    depends_on:
-      - redis
-
-    environment:
-      - PYTHONUNBUFFERED=0
-      - REDIS_ADDRESS=${REDIS_ADDRESS}
-      - REDIS_PORT=${REDIS_PORT}
-      - TRACER_REPORTING_HOST=${TRACER_REPORTING_HOST}
-      - TRACER_REPORTING_PORT=${TRACER_REPORTING_PORT}
-      - SERVICE_STREAM_KEY=${ADAPTATION_ANALYSER_STREAM_KEY}
-      - SERVICE_CMD_KEY=${ADAPTATION_ANALYSER_CMD_KEY}
-      - LOGGING_LEVEL=DEBUG
-    cpus: 0.25
-
-  adaptation-planner:
-    image: registry.insight-centre.org/sit/mps/adaptation-planner:${IMAGE_TAG}
-    command: python /service/adaptation_planner/run.py
-    depends_on:
-      - redis
-
-    environment:
-      - PYTHONUNBUFFERED=0
-      - REDIS_ADDRESS=${REDIS_ADDRESS}
-      - REDIS_PORT=${REDIS_PORT}
-      - TRACER_REPORTING_HOST=${TRACER_REPORTING_HOST}
-      - TRACER_REPORTING_PORT=${TRACER_REPORTING_PORT}
-      - SERVICE_STREAM_KEY=${ADAPTATION_PLANNER_STREAM_KEY}
-      - SERVICE_CMD_KEY=${ADAPTATION_PLANNER_CMD_KEY}
-      - LOGGING_LEVEL=DEBUG
-    cpus: 0.25
-
   query-manager:
     image: registry.insight-centre.org/sit/mps/query-manager:${IMAGE_TAG}
     command: python /service/query_manager/run.py
@@ -262,7 +194,7 @@ services:
     cpus: 0.25
 
   object-detection:
-    image: registry.insight-centre.org/sit/mps/content-extraction-service:${IMAGE_TAG}
+    image: registry.insight-centre.org/sit/mps/content-extraction-service:game-demo
     entrypoint: /content-extractor/entrypoint.sh
     command: python /content-extractor/content_extraction_service/run.py
     depends_on:
@@ -276,8 +208,8 @@ services:
       - SERVICE_CMD_KEY=${OBJECT_DETECTION_CMD_KEY}
       - TRACER_REPORTING_HOST=${TRACER_REPORTING_HOST}
       - TRACER_REPORTING_PORT=${TRACER_REPORTING_PORT}
-      - DNN_WEIGHTS_PATH=/content-extractor/content_extraction_service/dnn_model/tiny_yolo_voc_v2/yolov2-tiny-voc.weights
-      - DNN_CKPT_FOLDER_PATH=/content-extractor/content_extraction_service/dnn_model/tiny_yolo_voc_v2/ckpt/
+      - DNN_WEIGHTS_PATH={DNN_WEIGHTS_PATH}
+      - DNN_MODEL=${DNN_MODEL}
       - DNN_INPUT_HEIGHT=416
       - DNN_INPUT_WIDTH=416
       - DNN_SCORE_THRESHOLD=0.3
@@ -286,39 +218,6 @@ services:
       - LOGGING_LEVEL=DEBUG
     cpus: 1
     mem_limit: 1500mb
-
-  color-detection:
-    image: registry.insight-centre.org/sit/mps/color-detection-service:${IMAGE_TAG}
-    command: python /service/color_detection_service/run.py
-    depends_on:
-      - redis
-
-    environment:
-      - PYTHONUNBUFFERED=0
-      - REDIS_ADDRESS=${REDIS_ADDRESS}
-      - REDIS_PORT=${REDIS_PORT}
-      - TRACER_REPORTING_HOST=${TRACER_REPORTING_HOST}
-      - TRACER_REPORTING_PORT=${TRACER_REPORTING_PORT}
-      - SERVICE_STREAM_KEY=${COLOR_DETECTION_STREAM_KEY}
-      - SERVICE_CMD_KEY=${COLOR_DETECTION_CMD_KEY}
-      - LOGGING_LEVEL=DEBUG
-    cpus: 0.5
-    mem_limit: 100mb
-
-  publisher:
-    image: registry.insight-centre.org/sit/mps/publisher:${IMAGE_TAG}
-    command: python publisher/run.py --id Publisher01WebCam01 --src rtmp://media-server/live/webcam
-    depends_on:
-      - redis
-
-    environment:
-      - PYTHONUNBUFFERED=0
-      - REDIS_ADDRESS=${REDIS_ADDRESS}
-      - REDIS_PORT=${REDIS_PORT}
-      - PUBLISHER_CMD_KEY_TAG=${PUBLISHER_CMD_KEY_TAG}
-      - CLIENT_MANAGER_CMD_KEY=${CLIENT_MANAGER_CMD_KEY}
-      - LOGGING_LEVEL=DEBUG
-    cpus: 0.25
 
   client-manager:
     image: registry.insight-centre.org/sit/mps/client-manager:${IMAGE_TAG}
