@@ -5,4 +5,4 @@ services:
     environment:
       - GPU_SUPPORT_FLAG=1
     cpus: 1
-    mem_limit: 1500mb
+    mem_limit: 8000mb
